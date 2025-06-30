@@ -1,0 +1,12 @@
+# Chat History
+
+This folder contains automatically exported conversation history from AI sessions.
+
+Files are created with timestamp format: `chat-history-YYYY-MM-DD-HHMMSS.md`
+
+Each file includes:
+- Complete conversation from the session
+- Summary of key accomplishments and decisions
+- Formatted as markdown for easy reading
+
+This enables session continuity and project documentation. 
