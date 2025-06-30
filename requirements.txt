@@ -2,6 +2,11 @@
 requests>=2.31.0
 python-dotenv>=1.0.0
 
+# Web framework and real-time features
+Flask>=2.3.0
+Flask-SocketIO>=5.3.0
+eventlet>=0.33.0
+
 # Development and testing
 pytest>=7.4.0
 pytest-cov>=4.1.0

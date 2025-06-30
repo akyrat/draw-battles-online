@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing Battle - Room {{ room_code }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+</head>
+<body>
+    <div class="room-container">
+        <header class="room-header">
+            <div class="room-info">
+                <h1>🎨 Room: {{ room_code }}</h1>
+                <div id="connection-status" class="connection-status">Connecting...</div>
+            </div>
+            <div class="room-actions">
+                <button id="leave-room-btn" class="secondary-btn">Leave Room</button>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <aside class="sidebar">
+                <div class="players-section">
+                    <h3>Players</h3>
+                    <ul id="players-list">
+                        <!-- Players will be added dynamically -->
+                    </ul>
+                </div>
+
+                <div class="drawing-tools">
+                    <h3>Drawing Tools</h3>
+                    <div class="tool-group">
+                        <label for="brush-size">Brush Size:</label>
+                        <input type="range" id="brush-size" min="1" max="20" value="3">
+                        <span id="brush-size-value">3</span>
+                    </div>
+                    
+                    <div class="tool-group">
+                        <label>Color:</label>
+                        <div class="color-palette">
+                            <input type="color" id="color-picker" value="#000000">
+                            <div class="quick-colors">
+                                <button class="color-btn" data-color="#000000" style="background: #000000"></button>
+                                <button class="color-btn" data-color="#FF0000" style="background: #FF0000"></button>
+                                <button class="color-btn" data-color="#00FF00" style="background: #00FF00"></button>
+                                <button class="color-btn" data-color="#0000FF" style="background: #0000FF"></button>
+                                <button class="color-btn" data-color="#FFFF00" style="background: #FFFF00"></button>
+                                <button class="color-btn" data-color="#FF00FF" style="background: #FF00FF"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-group">
+                        <button id="clear-canvas-btn" class="secondary-btn">Clear Canvas</button>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="canvas-area">
+                <div class="canvas-container">
+                    <canvas id="drawing-canvas" width="800" height="600"></canvas>
+                </div>
+                <div id="canvas-status" class="canvas-status">Ready to draw!</div>
+            </main>
+        </div>
+
+        <div id="message-area" class="message-area"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/drawing.js') }}"></script>
+    <script>
+        // Initialize room
+        const roomCode = "{{ room_code }}";
+        
+        // Initialize drawing functionality after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof DrawingApp !== 'undefined') {
+                const drawingApp = new DrawingApp(roomCode);
+                console.log('DrawingApp initialized successfully');
+            } else {
+                console.error('DrawingApp not loaded');
+            }
+        });
+
+        // Leave room functionality
+        document.getElementById('leave-room-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to leave this room?')) {
+                window.location.href = window.location.origin + '/';
+            }
+        });
+    </script>
+</body>
+</html> 
