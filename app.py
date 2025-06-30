@@ -85,9 +85,48 @@ def join_room_request(data):
     
     logger.info(f"Player {request.sid} joined room {room_code}")
     
+    # Send existing canvas state to the new player
+    canvas_state = active_rooms[room_code]['canvas_state']
+    if canvas_state:
+        emit('canvas_state', {'strokes': canvas_state})
+        logger.info(f"Sent {len(canvas_state)} existing strokes to new player in room {room_code}")
+    
     # Notify player and room
     emit('room_joined', {'room_code': room_code})
     socketio.emit('player_joined', player_info, room=room_code)
+
+
+@socketio.event
+def drawing_data(data):
+    """Handle real-time drawing data and broadcast to room"""
+    room_code = data.get('room_code')
+    if not room_code or room_code not in active_rooms:
+        emit('error', {'message': 'Invalid room'})
+        return
+    
+    # Store drawing stroke in room's canvas state for new joiners
+    if data.get('type') in ['stroke_start', 'stroke_continue']:
+        active_rooms[room_code]['canvas_state'].append(data)
+    
+    # Broadcast drawing data to all other players in the room (exclude sender)
+    emit('drawing_data', data, room=room_code, include_self=False)
+    logger.debug(f"Broadcasting drawing data to room {room_code}: {data.get('type')}")
+
+
+@socketio.event
+def clear_canvas(data):
+    """Handle canvas clear and broadcast to room"""
+    room_code = data.get('room_code')
+    if not room_code or room_code not in active_rooms:
+        emit('error', {'message': 'Invalid room'})
+        return
+    
+    # Clear the stored canvas state
+    active_rooms[room_code]['canvas_state'] = []
+    
+    # Broadcast canvas clear to all players in the room
+    emit('canvas_cleared', {}, room=room_code)
+    logger.info(f"Canvas cleared in room {room_code}")
 
 
 @socketio.event

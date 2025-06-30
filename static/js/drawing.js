@@ -124,6 +124,10 @@ class DrawingApp {
             window.location.href = '/';
         });
 
+        this.socket.on('canvas_state', (data) => {
+            this.replayCanvasState(data.strokes);
+        });
+
         console.log('Socket events initialized');
     }
 
@@ -274,6 +278,22 @@ class DrawingApp {
         if (playerElement) {
             playerElement.remove();
         }
+    }
+
+    replayCanvasState(strokes) {
+        console.log('Replaying canvas state:', strokes.length, 'strokes');
+        
+        // Clear canvas first
+        this.clearCanvasLocal();
+        
+        // Replay all stored strokes
+        strokes.forEach(stroke => {
+            if (stroke.type === 'stroke_continue') {
+                this.drawLine(stroke.lastX, stroke.lastY, stroke.x, stroke.y, stroke.color, stroke.size);
+            }
+        });
+        
+        this.showMessage(`Loaded existing drawing (${strokes.length} strokes)`);
     }
 
     showMessage(message) {
