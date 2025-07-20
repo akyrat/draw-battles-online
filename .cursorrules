@@ -25,6 +25,7 @@
 ### 4. Project Setup Best Practices
 - Always check current directory state before making changes
 - Use semantic search and file reading tools to understand context
+- **Always refer to `docs/project-architecture-map.json` for comprehensive understanding of project structure, file purposes, and architectural patterns**
 - Create comprehensive, well-documented configuration files
 - Include helpful comments and explanations in code
 
